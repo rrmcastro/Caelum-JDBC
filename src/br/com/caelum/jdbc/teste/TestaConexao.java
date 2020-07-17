@@ -1,4 +1,4 @@
-package br.com.caelum.teste;
+package br.com.caelum.jdbc.teste;
 
 import java.sql.Connection;
 import java.sql.SQLException;
