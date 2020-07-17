@@ -21,52 +21,48 @@ public class ContatoDao {
 	public ContatoDao() {
 		this.connection = new ConnectionFactory().getConnection();
 	}
-	
+
 	public void adiciona(Contato contato) {
-		String sql = "INSERT INTO contatos " +
-				"(nome, email, endereco, dataNascimento)" + 
-				"VALUES (?, ?, ?, ?)";
-		
+		String sql = "INSERT INTO contatos " + "(nome, email, endereco, dataNascimento)" + "VALUES (?, ?, ?, ?)";
+
 		try {
 			// prepared statement para inserção
 			PreparedStatement stmt = (PreparedStatement) connection.prepareStatement(sql);
-			
+
 			// seta of valores
 			stmt.setString(1, contato.getNome());
 			stmt.setString(2, contato.getEmail());
 			stmt.setString(3, contato.getEndereco());
-			stmt.setDate(4, new Date(
-					contato.getDataNascimento().getTimeInMillis()));
-			
+			stmt.setDate(4, new Date(contato.getDataNascimento().getTimeInMillis()));
+
 			// executa
 			stmt.execute();
 			stmt.close();
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
-			
+
 		}
 	}
-	
-	public List<Contato>getLista(){
+
+	public List<Contato> getLista() {
 		try {
 			List<Contato> contatos = new ArrayList<Contato>();
-			PreparedStatement stmt = (PreparedStatement) this.connection.
-					prepareStatement("SELECT * FROM contatos");
+			PreparedStatement stmt = (PreparedStatement) this.connection.prepareStatement("SELECT * FROM contatos");
 			ResultSet rs = stmt.executeQuery();
-			
-			while(rs.next()) {
+
+			while (rs.next()) {
 				// criando o objeto Contato
 				Contato contato = new Contato();
 				contato.setId(rs.getLong("id"));
 				contato.setNome(rs.getString("nome"));
 				contato.setEmail(rs.getString("email"));
 				contato.setEndereco(rs.getString("endereco"));
-				
+
 				// montando a data através do Calendar
 				Calendar data = Calendar.getInstance();
 				data.setTime(rs.getDate("dataNascimento"));
 				contato.setDataNascimento(data);
-				
+
 				// adicionando o objeto à lista
 				contatos.add(contato);
 			}
@@ -76,6 +72,40 @@ public class ContatoDao {
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-		
+
+	}
+
+	public void altera(Contato contato) {
+		String sql = "UPDATE contatos SET nome=?, email=?, endereco=?, dataNascimento=? WHERE id=?";
+
+		try {
+			PreparedStatement stmt = (PreparedStatement) connection.prepareStatement(sql);
+			
+			stmt.setString(1, contato.getNome());
+			stmt.setString(2, contato.getEmail());
+			stmt.setString(3, contato.getEndereco());
+			stmt.setDate(4, new Date(contato.getDataNascimento().getTimeInMillis()));
+			stmt.setLong(5, contato.getId());
+			
+			stmt.execute();
+			stmt.close();
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public void remove(Contato contato) {
+		try {
+			PreparedStatement stmt = (PreparedStatement) connection.prepareStatement("DELETE FROM contatos WHERE id=?");
+			
+			stmt.setLong(1, contato.getId());
+			
+			stmt.execute();
+			stmt.close();
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
