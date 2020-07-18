@@ -15,6 +15,8 @@ import br.com.caelum.modelo.Contato;
 
 public class ContatoDao {
 
+	private String sqlQuery = "";
+	private PreparedStatement stmt;
 	// a conexao com banco de dados
 	private Connection connection;
 
@@ -96,8 +98,11 @@ public class ContatoDao {
 	}
 
 	public void remove(Contato contato) {
+			String sql = "DELETE FROM contatos WHERE id=?";
 		try {
-			PreparedStatement stmt = (PreparedStatement) connection.prepareStatement("DELETE FROM contatos WHERE id=?");
+			
+			
+			PreparedStatement stmt = (PreparedStatement) connection.prepareStatement(sql);
 			
 			stmt.setLong(1, contato.getId());
 			
@@ -106,6 +111,7 @@ public class ContatoDao {
 			
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
-		}
+		} finally {
+	}
 	}
 }
