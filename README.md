@@ -1,5 +1,3 @@
-# curso-java-swing
-
 # APOSTILA CAELUM
 
 Curso JAVA para desenvolvimento web
